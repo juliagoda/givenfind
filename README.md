@@ -28,6 +28,8 @@ import qualified GivenFind.Base as G
 ## Examples
 
 import GivenFind.Physics
+import GivenFind.Base
+__
 
 
 searchAllPhys "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."
