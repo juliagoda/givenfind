@@ -4,11 +4,11 @@
 
 Go to the main directory, where Setup.hs is and write those commands:
 
-**1. cabal configure**
-**2. cabal build**
-**3. cabal install**
+**1. cabal configure** <br />
+**2. cabal build** <br />
+**3. cabal install** <br />
 
-
+  
 ## About module
 
 This module provides search functions over texts in two formats - String
@@ -21,10 +21,10 @@ parameters - your text and searched symbol or even list of symbols.
  If there are duplicates of names, I suggest using:
 
 
-import qualified GivenFind.Physics as P
-import qualified GivenFind.Base as G
+import qualified GivenFind.Physics as P  
+import qualified GivenFind.Base as G  
 
-
+  
 ## Examples
 
 import GivenFind.Physics
@@ -63,8 +63,8 @@ getAll "With what speed in miles/hr (1 m/s = 2.23 mi/hr) must an object be throw
 searchYourOneSymb "Find the surface area if the length of one side is 3 cm" "cm"
 
 *Result:   Symbol ("cm",3.0)*
-
-
+  
+  
 ## Future
 
 It's not over. I'm going to test and add next modules of different branches to this project. Someone can notice that there are lacks of some units or symbols, but all will be improved.
