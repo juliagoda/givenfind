@@ -16,6 +16,7 @@ import Control.Monad
 import qualified Data.Text as T
 import GivenFind.Base
 import GivenFind.Physics
+import GivenFind.Geography
 
 {- $intro
  #intro#

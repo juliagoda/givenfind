@@ -4,9 +4,10 @@
 
 Go to the main directory, where Setup.hs is and write those commands:
 
-**1. cabal configure** <br />
-**2. cabal build** <br />
-**3. cabal install** <br />
+**1. cabal install --only-dependencies** <br />
+**2. cabal configure** <br />
+**3. cabal build** <br />
+**4. cabal install** <br />
 
   
 ## About module
@@ -18,7 +19,7 @@ gets only one parameter - your exercise in String or Text format. If you think, 
 of units and symbols are not sufficient, you can use functions that take two
 parameters - your text and searched symbol or even list of symbols. 
 
- If there are duplicates of names, I suggest using:
+ If there are duplicates of names, I suggest using for example:
 
 
 import qualified GivenFind.Physics as P  

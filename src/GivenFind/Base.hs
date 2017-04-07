@@ -9,6 +9,9 @@
             
 module GivenFind.Base   
 ( SearchInText(..)
+, mixSplitAndReturn
+, textToString
+, stringToText
 ) where
     
 

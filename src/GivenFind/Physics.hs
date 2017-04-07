@@ -19,6 +19,7 @@ import qualified Data.List as L
 import Data.Maybe
 
 
+
 data Symbols a = Symbol a| None deriving (Show, Eq, Ord, Read)
 
 data WhereData = OneLeft | OneRight | TwoRight deriving (Eq, Ord, Show)
