@@ -36,31 +36,31 @@ import qualified Data.Text as T
 
 
 listOfHours :: String -> Maybe [TimeOfDay]
-listOfHours txt = convertHours . getHours . textToString . mixSplitAndReturn $ T.pack txt
+listOfHours txt = checkIfListEmpty . convertHours . getHours . return . removelastPuncs . removefirstPuncs $ mapText txt
 
 listOfScales :: String -> Maybe [String]
-listOfScales txt = checkForwNumbers . textToString . mixSplitAndReturn $ T.pack txt
+listOfScales txt = checkIfListEmpty . checkForwNumbers . return . removelastPuncs . removefirstPuncs $ mapText txt
 
 listOfNominalScales :: String -> Maybe [String]
 listOfNominalScales txt = let
-                              getText = textToString . mixSplitAndReturn $ T.pack txt
+                              getText = return . removelastPuncs . removefirstPuncs $ mapText txt
                               in
-                                  itScales (getNominalIndexes getText) getText
+                                  checkIfListEmpty . itScales (getNominalIndexes getText) getText
              
 listOfDistances :: String -> Maybe [String]
-listOfDistances txt = getDistances distanceSymb (convShortTypes ((textToString . mixSplitAndReturn . T.pack) txt) "") ""
+listOfDistances txt = checkIfListEmpty . getDistances distanceSymb (convShortTypes ((return . removelastPuncs . removefirstPuncs . mapText) txt) "") ""
                                   
 listOfLevels :: String -> Maybe [String]
-listOfLevels txt = getLevels "" . convertLvlTypes . textToString . mixSplitAndReturn $ T.pack txt
+listOfLevels txt = checkIfListEmpty . getLevels "" . convertLvlTypes . return . removelastPuncs . removefirstPuncs $ mapText txt
 
 listOfTemperatures :: String -> Maybe [String]
-listOfTemperatures txt = getTemperatures "" . textToString . mixSplitAndReturn $ T.pack txt
+listOfTemperatures txt = checkIfListEmpty . getTemperatures "" . return . removelastPuncs . removefirstPuncs $ mapText txt
 
 listOfTitudes :: String -> Maybe [Titudes]
-listOfTitudes txt = convertTitudes . getTitudes . textToString . mixSplitAndReturn $ T.pack txt
+listOfTitudes txt = checkIfListEmpty . convertTitudes . getTitudes . return . removelastPuncs . removefirstPuncs $ mapText txt
 
 listOfDegrees :: String -> Maybe [Degrees Double]
-listOfDegrees txt = convertDegrees . reduceDegChar . getDegrees . textToString . mixSplitAndReturn $ T.pack txt
+listOfDegrees txt = checkIfListEmpty . convertDegrees . reduceDegChar . getDegrees . return . removelastPuncs . removefirstPuncs $ mapText txt
 
 --newtype Latitude = Latitude Double deriving (Eq, Show, Ord) -- N / S
 
@@ -82,6 +82,33 @@ tempNumb = ["oC","^oC","°C","°F","oF","^oF","°K","oK","^oK","°N","oN","^oN"]
 latiLonList :: [String]
 latiLonList = ["°N","°S","°W","°E","`N","`S","`W","`E","oN","oS","oW","oE","^oN","^oS","^oW","^oE"]
 
+
+checkIfListEmpty :: Maybe [a] -> Maybe [a]
+checkIfListEmpty list
+    | (length (fromJust list)) > 0 = list
+    | otherwise = Nothing
+
+-- splits text to list of words (splitting thanks to white spaces)                   
+mapText :: String -> [String]
+mapText text = removefirstPuncs . removelastPuncs . words $ text
+
+
+arePuncs :: Char -> Bool
+arePuncs x
+    | x == '!' = True
+    | x == '.' = True
+    | x == ',' = True
+    | x == '?' = True
+    | otherwise = False
+
+
+-- removes "!.,?" characters from end and begin of list elements of [Char]
+removefirstPuncs :: [String] -> [String]
+removefirstPuncs xs = map (\x -> if arePuncs (head x) then tail x else x) xs
+
+
+removelastPuncs :: [String] -> [String]
+removelastPuncs xs = map (\x -> if arePuncs (last x) then init x else x) xs
 
 -- values from dictionary with the same keys, are bound to a list
 joinSndWords :: (Ord k) => [(k, a)] -> M.Map k [a]  
@@ -178,7 +205,7 @@ getTemperatures prevEl _ = Nothing
 getHours :: Maybe [String] -> Maybe [String]
 getHours (Just (x:y:z:xs)) = case x == "at" of
                                              True -> case any (==':') y && (length y == 5 || length y == 4)  of
-                                                          True -> liftM ((y ++ (takeAmPm z)) :) (getHours (Just xs))
+                                                          True -> liftM ((y ++ (takeAmPm z)) :) (getHours (liftM (y :) (liftM (z :) (Just xs))))
                                                           _ -> getHours (liftM (y :) (liftM (z :) (Just xs)))
                                              False -> getHours (liftM (y :) (liftM (z :) (Just xs)))
                                              
