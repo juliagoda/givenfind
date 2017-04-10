@@ -3,24 +3,20 @@
             ,FunctionalDependencies
             ,FlexibleInstances
             ,BangPatterns
-            ,FlexibleContexts
-            ,CPP #-}
+            ,FlexibleContexts #-}
 
             
-module GivenFind.Base   
+module GivenFind.Questions   
 ( SearchInText(..)
-, mixSplitAndReturn
-, textToString
-, stringToText
 ) where
     
 
-    
 import qualified Data.List as L
 import qualified Data.Text as T
 import Data.Char
 import Control.Monad
 import Data.Maybe
+import GivenFind
 
 
 -- class for search questions and tasks
@@ -168,14 +164,6 @@ listCorComSentences texts = do
     text <- texts     
     filterM (hh listWordString) text
 
-    
--- converts Maybe [T.Text] to Maybe [String]
-textToString :: Maybe [T.Text] -> Maybe [String]
-textToString texts = texts >>= \b -> return $ map T.unpack b
-
--- converts Maybe [String] to Maybe [T.Text]
-stringToText :: Maybe [String] -> Maybe [T.Text]
-stringToText texts = texts >>= \b -> return $ map T.pack b
 
 -- checks if elements from [String] list are in a text. Maybe monad is needed for filterM
 hh :: [String] -> String -> Maybe Bool
@@ -188,10 +176,6 @@ listCorQuestSentences texts = do
     text <- texts
     filterM (hh ["?"]) text
     
-checkIfListEmpty :: Maybe [a] -> Maybe [a]
-checkIfListEmpty list
-    | (length (fromJust list)) > 0 = list
-    | otherwise = Nothing
     
 ifCanGetHead :: Maybe [a] -> Maybe a
 ifCanGetHead list = if (length list) > 0 then liftM head list else Nothing

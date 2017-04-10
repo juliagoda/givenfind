@@ -1,16 +1,15 @@
 {-# LANGUAGE MultiParamTypeClasses
             ,FlexibleInstances
-            ,TypeSynonymInstances
-            ,OverlappingInstances #-}
+            ,TypeSynonymInstances #-}
             
 module GivenFind.Physics  
 ( SearchSymbols(..)  
-, Symbols(..)
 ) where 
 
 import Prelude hiding (lookup)
 import qualified Data.Map as M
-import GivenFind.Base
+import GivenFind
+import GivenFind.Questions
 import Control.Monad
 import Control.Applicative
 import qualified Text.Read as R
@@ -18,29 +17,6 @@ import qualified Data.Text as T
 import qualified Data.List as L
 import Data.Maybe
 
-
-
-data Symbols a = Symbol a| None deriving (Show, Eq, Ord, Read)
-
-data WhereData = OneLeft | OneRight | TwoRight deriving (Eq, Ord, Show)
-
-instance Functor Symbols where 
-    fmap f (Symbol x) = Symbol (f x)
-    fmap f None = None 
-    
-instance Applicative Symbols where  
-    pure = Symbol
-    None <*> _ = None
-    (Symbol f) <*> something = fmap f something  
-
-instance Monad Symbols  where
-    return a = Symbol a
-    Symbol x >>= y = y x
-    None >>= y = None
-    Symbol x >> Symbol y = Symbol y
-    None >> Symbol y = None
-    Symbol x >> None = None
-    fail _ = None
     
     
 class SearchInText s => SearchSymbols s where
@@ -90,29 +66,6 @@ instance SearchSymbols T.Text where
     
 singleton :: a -> [a]
 singleton a = case a of a -> [a]
-         
-         
--- splits text to list of words (splitting thanks to white spaces)                   
-mapText :: String -> [String]
-mapText text = removefirstPuncs . removelastPuncs . words $ text
-
-
-arePuncs :: Char -> Bool
-arePuncs x
-    | x == '!' = True
-    | x == '.' = True
-    | x == ',' = True
-    | x == '?' = True
-    | otherwise = False
-
-
--- removes "!.,?" characters from end and begin of list elements of [Char]
-removefirstPuncs :: [String] -> [String]
-removefirstPuncs xs = map (\x -> if arePuncs (head x) then tail x else x) xs
-
-
-removelastPuncs :: [String] -> [String]
-removelastPuncs xs = map (\x -> if arePuncs (last x) then init x else x) xs
 
 
 -- if in a list of String have been found some element, then element is returned and function is stopped
@@ -162,11 +115,6 @@ phySymbols :: [String]
 phySymbols = ["m","meters","meter","kg","s","seconds","second","m/s2","m/s^2","m/s","kg * m/s","J","W","N","kg/m3","kg/m^3","Pa","Hz","K","D","Ω","V","A","J / kg oC", "J/kgC", "J / kg * C", "J/kg * C","1N * m2/kg2", "1N * m^2/kg^2", "1N * m^2 / kg^2", "1N * m^2/kg^2"]
 
 
--- values from dictionary with the same keys, are bound to a list
-joinSndWords :: (Ord k) => [(k, a)] -> M.Map k [a]  
-joinSndWords xs = M.fromListWith (++) $ map (\(k,v) -> (k,[v])) xs 
-
-
 -- same units : m, J and N have different symbols
 chooseFromText :: String -> [String] -> String
 chooseFromText unit text = case unit of
@@ -205,11 +153,6 @@ convertNumbInt :: [String] -> Int -> Symbols Int
 convertNumbInt text curIndex
     | (R.readMaybe (secureConvert text (curIndex - 1)) :: Maybe Double) /= Nothing = Symbol (-1)
     | otherwise = None
-
-    
--- secure searching in text during conversions
-secureConvert :: [String] -> Int -> String
-secureConvert text indexNumb = if indexNumb < 0 || indexNumb > (length text - 1) then "" else text !! indexNumb
 
 
 -- zipped symbols with every matched index in two-dimensional list
