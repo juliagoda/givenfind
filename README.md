@@ -1,17 +1,19 @@
 # GivenFind module
 
 1. [About module](#about-module)  
-  * [Questions - examples](#questions-examples)  
-  * [Physics - examples](physics-examples)  
-  * [Geography - examples](#geography-examples)  
+  * [Questions - examples](#questions-\--examples)  
+  * [Physics - examples](physics-\--examples)  
+  * [Geography - examples](#geography-\--examples)  
 2. [Installation](#installation)  
   * [As project](#as-project)  
   * [Including in other projects](#including-in-other-projects)  
-  * [Problems](#problems)__
+  * [Problems](#problems)  
 3. [Future](#future)  
 
-  
-  
+
+<br/>
+<br/>
+
 ## About module
 
 This module provides search functions over texts in two formats - String
@@ -27,11 +29,14 @@ parameters - your text and searched symbol or even list of symbols.
 import qualified GivenFind.Physics as P  
 import qualified GivenFind.Questions as Q  
 
-  
+
+<br/>
+
 ### Questions - examples
 
 import GivenFind.Questions  
-  
+
+<br/>
 
 
 `findFirstTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."`
@@ -48,15 +53,16 @@ import GivenFind.Questions
 
 `getAll "With what speed in miles/hr (1 m/s = 2.23 mi/hr) must an object be thrown to reach a height of 91.5 m (equivalent to one football field)? Assume negligible air resistance."`
 
-*Result   Just ["Assume negligible air resistance","With what speed in miles/hr (1 m/s = 2.23 mi/hr) must an object be thrown to reach a height of 91.5 m (equivalent to one football field)?"]*
+*Result:   Just ["Assume negligible air resistance","With what speed in miles/hr (1 m/s = 2.23 mi/hr) must an object be thrown to reach a height of 91.5 m (equivalent to one football field)?"]*
 
 
-  
+<br/>
 
 ### Physics - examples
 
 import GivenFind.Physics  
-  
+
+<br/>
 
 `searchAllPhys "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."`
 
@@ -75,12 +81,13 @@ import GivenFind.Physics
 *Result:   Symbol ("cm",3.0)*
 
 
-  
+<br/>
 
 ### Geography - examples
 
 import GivenFind.Geography  
-  
+
+<br/>
 
 `listOfTemperatures "The combined global land and ocean average surface temperature for November 2010 was 0.69°C (1.24°F) above the 20th century average of 12.9°C (55.2°F). This was the second warmest such period on record. 2004 was the warmest November on record."`
 
@@ -109,12 +116,15 @@ import GivenFind.Geography
 Results with other types than String or Text have sense because of existing functions in other modules like "Longitude" or "Latitude" types. 
 
 
-  
-  
+<br/>
+<br/>
+
 ## Installation
 
 Remember, that installations work for your projects, not globally. Global installation of modules, that are not from stackage is not recommended because of
-  
+
+<br/>
+
 ### As project
 
 ```
@@ -122,16 +132,17 @@ git clone https://github.com/juliagoda/givenfind.git
 cd givenfind
 stack setup && stack build
 ```
-  
+<br/>
+
 ### Including in other projects
 
-Open stack.yaml file in your project directory. Below line with "packages:", add lines:  
+Open stack.yaml file in your project directory. Below line with "packages:", add lines with git repository and last commit:  
 
 *\- location:*  <br/>
-*git: https://github.com/juliagoda/givenfind.git  * <br/>
-*commit: 19c9450e2248b0b89a36b1bf8ab51af356142c89  * <br/>
+*git: https://github.com/juliagoda/givenfind.git* <br/>
+*commit: 19c9450e2248b0b89a36b1bf8ab51af356142c89* <br/>
   
-Below line with "extra-deps:" add lines:  
+Below line with "extra-deps:" add lines with external dependencies:  
 
 *\- gps-1.2* <br/>
 *\- reverse-geocoding-0.3.0.0* <br/>
@@ -140,12 +151,36 @@ Below line with "extra-deps:" add lines:
 *\- http-client-tls-0.2.4.1* <br/>
 *\- wreq-0.4.1.0* <br/>
 
-  
+install external dependencies with command:  
+
+`stack solver --update-config`
+
+<br/> 
+
+Second method is use a git clone in project (where stack.yaml is):  
+
+```
+git clone https://github.com/juliagoda/givenfind.git
+```
+
+next step is adding below line with "packages:" in stack.yaml (in main project) with name of downloaded module's directory (where is another .cabal file):  
+
+\- givenfind  
+\- '.'   
+
+install external dependencies with command:  
+
+`stack solver --update-config`
+
+<br/>
+
 ### Problems
 
 To fix your problems with configuration, installation, creation or update of your project, [check this site](https://docs.haskellstack.org/en/stable/GUIDE/).
-  
-  
+
+<br/>
+<br/>
+
 ## Future
 
 It's not over. I'm going to test and add next modules of different branches to this project. Someone can notice that there are lacks of some units or symbols, but all will be improved.
