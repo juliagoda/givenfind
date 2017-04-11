@@ -121,7 +121,7 @@ Results with other types than String or Text have sense because of existing func
 
 ## Installation
 
-Remember, that installations work for your projects, not globally. Global installation of modules, that are not from stackage is not recommended because of
+Remember, that installations work for your projects, not globally. Global installation of modules, that are not from stackage is not recommended.
 
 <br/>
 
