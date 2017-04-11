@@ -84,6 +84,8 @@ arePuncs x
     | x == '.' = True
     | x == ',' = True
     | x == '?' = True
+    | x == '(' = True
+    | x == ')' = True
     | otherwise = False
 
 

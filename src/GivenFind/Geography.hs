@@ -81,7 +81,7 @@ tempNumb :: [String]
 tempNumb = ["oC","^oC","°C","°F","oF","^oF","°K","oK","^oK","°N","oN","^oN"]
 
 latiLonList :: [String]
-latiLonList = ["°N","°S","°W","°E","`N","`S","`W","`E","oN","oS","oW","oE","^oN","^oS","^oW","^oE"]
+latiLonList = ["°N","°S","°W","°E","`N","`S","`W","`E","′N","′S","′W","′E","oN","oS","oW","oE","^oN","^oS","^oW","^oE"]
 
 
 -- If at word's beginning are found characters "1:", it's a scale
@@ -246,7 +246,7 @@ getTitudes _ = Nothing
 
 -- found words from function "getTitudes" are converted from String to type Titudes, that contains Longitude as well as Latitude
 convertTitudes :: Maybe [String] -> Maybe [Titudes]
-convertTitudes titudesList = titudesList >>= mapM (\x -> (return . helpFunc . splitOneOf "o`,") x)
+convertTitudes titudesList = titudesList >>= mapM (\x -> (return . helpFunc . splitOneOf "o`,°′") x)
 
 
 -- auxiliary function for converted values of found latitudes and longitudes
