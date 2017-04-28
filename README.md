@@ -2,7 +2,7 @@
 
 1. [About module](#about-module)  
   * [Questions - examples](#questions-\--examples)  
-  * [Physics - examples](physics-\--examples)  
+  * [Physics - examples](#physics-\--examples)  
   * [Geography - examples](#geography-\--examples)  
 2. [Installation](#installation)  
   * [As project](#as-project)  
@@ -113,7 +113,7 @@ import GivenFind.Geography
 
 --
   
-Results with other types than String or Text have sense because of existing functions in other modules like "Longitude" or "Latitude" types. 
+Results with other types than String or Text have sense because of existing types in other modules like "Longitude" or "Latitude". 
 
 
 <br/>
