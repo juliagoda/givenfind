@@ -43,10 +43,10 @@ listOfNominalScales txt = let
                               getText = return . removelastPuncs . removefirstPuncs $ mapText txt
                               in
                                   checkIfListEmpty $ itScales (getNominalIndexes getText) getText
-             
+
 listOfDistances :: String -> Maybe [Distance]
 listOfDistances txt = checkIfListEmpty . convertDistances . getDistances distanceSymb "" . convShortTypes "" . return . removelastPuncs . removefirstPuncs . mapText $ txt
-                                  
+
 listOfLevels :: String -> Maybe [String]
 listOfLevels txt = checkIfListEmpty . getLevels "" . convertLvlTypes . return . removelastPuncs . removefirstPuncs $ mapText txt
 

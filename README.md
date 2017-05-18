@@ -8,7 +8,8 @@
   * [As project](#as-project)  
   * [Including in other projects](#including-in-other-projects)  
   * [Problems](#problems)  
-3. [Future](#future)  
+3. [Tests](#tests)__
+4. [Future](#future)  
 
 
 <br/>
@@ -39,15 +40,69 @@ import GivenFind.Questions
 <br/>
 
 
-`findFirstTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."`
+`findFirstQuestion "Suppose there were a mountain of volume M that has in it a (Poisson) distribution of mine-able gold having total volume G, and you are given a mine claim that includes a total mine-able volume V of the mountain. While you are deliberating as to whether or not to invest in the (considerable!) expense of gold-mining, someone else works a claim, mining out a volume of the mountain R that yields a volume Rg of gold. If you were then given the opportunity to trade your mine for another (unworked) mine of equal volume V, anywhere else on the mountain, what should you do? How much can you expect to win if you keep your mine? And if you trade for another one?"`
+
+*Result:    Just " If you were then given the opportunity to trade your mine for another (unworked) mine of equal volume V, anywhere else on the mountain, what should you do?"*
+
+--
+
+`findLastQuestion "Suppose there were a mountain of volume M that has in it a (Poisson) distribution of mine-able gold having total volume G, and you are given a mine claim that includes a total mine-able volume V of the mountain. While you are deliberating as to whether or not to invest in the (considerable!) expense of gold-mining, someone else works a claim, mining out a volume of the mountain R that yields a volume Rg of gold. If you were then given the opportunity to trade your mine for another (unworked) mine of equal volume V, anywhere else on the mountain, what should you do? How much can you expect to win if you keep your mine? And if you trade for another one?"`
+
+*Result:    Just "And if you trade for another one?"*
+
+--
+
+`findQuestions "Suppose there were a mountain of volume M that has in it a (Poisson) distribution of mine-able gold having total volume G, and you are given a mine claim that includes a total mine-able volume V of the mountain. While you are deliberating as to whether or not to invest in the (considerable!) expense of gold-mining, someone else works a claim, mining out a volume of the mountain R that yields a volume Rg of gold. If you were then given the opportunity to trade your mine for another (unworked) mine of equal volume V, anywhere else on the mountain, what should you do? How much can you expect to win if you keep your mine? And if you trade for another one?"`
+
+*Result:    Just [" If you were then given the opportunity to trade your mine for another (unworked) mine of equal volume V, anywhere else on the mountain, what should you do?","How much can you expect to win if you keep your mine?","And if you trade for another one?"]*
+
+--
+
+`ifIsQuestion "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car.""`
+
+*Result:    False*
+
+--
+
+`howManyQuestions "Suppose there were a mountain of volume M that has in it a (Poisson) distribution of mine-able gold having total volume G, and you are given a mine claim that includes a total mine-able volume V of the mountain. While you are deliberating as to whether or not to invest in the (considerable!) expense of gold-mining, someone else works a claim, mining out a volume of the mountain R that yields a volume Rg of gold. If you were then given the opportunity to trade your mine for another (unworked) mine of equal volume V, anywhere else on the mountain, what should you do? How much can you expect to win if you keep your mine? And if you trade for another one?"`
+
+*Result:    3*
+
+-- 
+
+`findLastTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."`
+
+*Result:    Just " Find acceleration, if time is 10 seconds for a distance of 2.0 m"*
+
+--
+
+`findFirstTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car. Find acceleration, if time is 10 seconds for a distance of 200 m."`
 
 *Result:      Just " Determine the acceleration of the car"*
+
+--
+
+`findTasks "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car. Find acceleration, if time is 10 seconds for a distance of 200 m."`
+
+*Result:    Just [" Determine the acceleration of the car"," Find acceleration, if time is 10 seconds for a distance of 2.0 m"]*
 
 --
 
 `findFirstTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. The acceleration of the car is 10m/s2."`
 
 *Result:   Nothing*
+
+--
+
+`ifIsTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."`
+
+*Result:    True*
+
+--
+
+`howManyTasks "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car. Find acceleration, if time is 10 seconds for a distance of 200 m."`
+
+*Result:    2*
 
 --
 
@@ -80,6 +135,26 @@ import GivenFind.Physics
 
 *Result:   Symbol ("cm",3.0)*
 
+--
+
+`searchAllPhysSymb "Rocket-powered sleds are used to test the human response to acceleration. If a rocket-powered sled is accelerated to a speed of 444 m/s in 1.83 seconds, then what is the acceleration and what is the distance that the sled travels?"`
+
+*Result:    Symbol [("seconds",1.83),("m/s",444.0)]*
+
+--
+
+`searchOnePhysSymb "Rocket-powered sleds are used to test the human response to acceleration. If a rocket-powered sled is accelerated to a speed of 444 m/s in 1.83 seconds, then what is the acceleration and what is the distance that the sled travels?"`
+
+*Result:    Symbol ("seconds",1.83)*
+
+--
+
+`searchYourAllSymb "Find the surface area if the length of one side is 3 cm and second is 1 m" ["cm","m"]`
+
+*Result:   Symbol [("cm",3.0),("m",1.0)]*
+
+--
+
 
 <br/>
 
@@ -110,6 +185,23 @@ import GivenFind.Geography
 `listOfRadians "The 15° gore that is offset from GMT or UT1 (not UTC) by twelve hours is bisected by the nautical date line into two 7.5° gores that differ from GMT by ±12 hours."`
 
 *Result: Just [0.2617993877991494,0.1308996938995747]*
+
+--
+
+`listOfScales "For example, a global map would probably have a small cartographic scale (e.g. 1:800,000) and a city map would probably have a large cartographic scale (e.g. 1:20,000)."`
+
+*Result:    Just ["1:800,000","1:20,000"]*
+
+
+`listOfLevels "Its elevation is 400 meters below sea level."`
+
+*Result:    Just ["400meters below sea level"]*
+
+--
+
+`listOfTemperatures "Zero Kelvin is also called absolute zero, the coldest temperature and lowest energy level. Absolute zero is equal to about minus -273oC."`
+
+*Result:    Just ["-273oC"]*
 
 --
   
@@ -177,6 +269,18 @@ install external dependencies with command:
 ### Problems
 
 To fix your problems with configuration, installation, creation or update of your project, [check this site](https://docs.haskellstack.org/en/stable/GUIDE/).
+
+<br/>
+<br/>
+
+## Tests
+
+Just to test modules classes run the commands (where stack.yaml is):
+
+```
+stack setup
+stack ghci
+```
 
 <br/>
 <br/>
