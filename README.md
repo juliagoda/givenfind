@@ -8,7 +8,7 @@
   * [As project](#as-project)  
   * [Including in other projects](#including-in-other-projects)  
   * [Problems](#problems)  
-3. [Tests](#tests)__
+3. [Tests](#tests)  
 4. [Future](#future)  
 
 
@@ -192,6 +192,7 @@ import GivenFind.Geography
 
 *Result:    Just ["1:800,000","1:20,000"]*
 
+--
 
 `listOfLevels "Its elevation is 400 meters below sea level."`
 
