@@ -64,3 +64,34 @@ tabGroupSymb = ["1A", "2A", "3B", "4B", "5B", "6B", "7B", "8", "1B", "2B", "3A",
 
 chemSymb :: [(String, String)]
 chemSymb = ([("H", "hydrogen"), ("He", "helium"),("Li", "lithium"),("Be", "beryllium") ,("B", "boron"),("C", "carbon"),("N", "nitrogen"),("O", "oxygen"),("F", "fluorine"),("Ne", "neon"),("Na", "sodium"),("Mg", "magnesium"),("Al", "alluminium"),("Si", "silicon"),("P", "phosphous"),("S", "sulphur"),("Cl", "chlorine"),("Ar", "argon"),("K", "potassium"),("Ca", "calcium"),("Sc", "scandium"),("Ti", "titanium"),("V", "vanadium"),("Cr", "chromium"),("Mn", "manganese"),("Fe", "iron"),("Co", "cobalt"),("Ni", "nickel"),("Cu", "copper"),("Zn", "zinc"),("Ga", "gallium"),("Ge", "germanium"),("As", "arsenic"),("Se", "selenium"),("Br", "bromine"),("Kr", "krypton"),("Rb", "rubidium"),("Sr", "strontium"),("Y", "yttrium")])
+
+
+-- finds groups and periods in the periodic table. Finds for example  "group IIIA" or "Period 6" or "group IIA and IIIB"
+getFromTable :: Maybe [String] -> [String] -> Maybe [String]
+getFromTable (Just (x:y:z:s:xs)) wordsList = case any (==True) . map (==x) $ wordsList of
+                                             True -> case (any (isDigit) y || (any (=='A') y || any (=='B') y)) && any (isDigit) s || (any (=='A') s || any (=='B') s) of
+                                                          True -> liftM (y:) $ liftM (s :) (getFromTable (liftM (y :) (liftM (z :) (liftM (s :) (Just xs)))) wordsList)
+                                                          False -> case any (isDigit) y || (any (=='A') y || any (=='B') y)  of
+                                                                        True -> liftM (y :) (getFromTable (liftM (y :) (liftM (z :) (liftM (s :) (Just xs)))) wordsList)
+                                                                        _ -> getFromTable (liftM (y :) (liftM (z :) (liftM (s :) $ Just xs))) wordsList
+                                             False -> getFromTable (liftM (y :) (liftM (z :) (liftM (s :) $ Just xs))) wordsList
+                                             
+getFromTable (Just (_:xs)) wordsList = getFromTable (Just xs) wordsList
+                                     
+getFromTable (Just _) wordsList = Just []                               
+getFromTable _ wordsList = Nothing
+
+
+
+lookupChemKeys :: [(String,String)] -> [String] -> Maybe [String]
+lookupChemKeys list text = if null [key | (key,value) <- list, key `elem` text] then Nothing else Just [key | (key,value) <- list, key `elem` text]
+
+lookupChemValues :: [(String,String)] -> [String] -> Maybe [String]
+lookupChemValues list text = if null [key | (key,value) <- list, value `elem` text] then Nothing else Just [key | (key,value) <- list, value `elem` text]
+
+appendChemResults :: [(String,String)] -> [String] -> Maybe [String]
+appendChemResults list text  = mappend (lookupChemKeys list text) (lookupChemValues list text)
+
+getElements :: Maybe [String] -> Maybe [Element]
+getElements (Just x) = Just [elementBySymbol value | value <- x, not.null $ value]
+getElements _ = Nothing
