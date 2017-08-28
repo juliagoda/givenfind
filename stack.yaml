@@ -7,7 +7,27 @@
 # Resolver to choose a 'specific' stackage snapshot or a compiler version.
 # A snapshot resolver dictates the compiler version and the set of packages
 # to be used for project dependencies. For example:
-#
+
+templates:
+  params:
+    author-name: Jagoda Gorska
+    author-email: juliagoda.de@gmail.com
+    category: Text
+    copyright: 'Copyright: (c) 2017 Jagoda "juliagoda" Gorska'
+    github-username: juliagoda
+    
+homepage: https://github.com/juliagoda/givenfind
+
+
+setup-info:
+  ghc:
+    windows32-custom-foo:
+      8.0.2:
+        url: "https://downloads.haskell.org/~ghc/8.0.2/ghc-8.0.2-i386-unknown-mingw32.tar.xz"
+        
+
+# to prevent file permission problems
+allow-different-user: true
 # resolver: lts-3.5
 # resolver: nightly-2015-09-21
 # resolver: ghc-7.10.2
@@ -16,6 +36,8 @@
 #  name: custom-snapshot
 #  location: "./custom-snapshot.yaml"
 resolver: lts-8.9
+compiler: ghc-8.0.2
+compiler-check: newer-minor
 
 # User packages to be built.
 # Various formats can be used as shown in the example below.
