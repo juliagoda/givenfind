@@ -7,7 +7,7 @@ module GivenFind.Physics
 ) where 
 
 import Prelude hiding (lookup)
-import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 import GivenFind
 import GivenFind.Questions
 import Control.Monad

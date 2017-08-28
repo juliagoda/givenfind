@@ -31,7 +31,7 @@ import Data.Maybe
 import Data.Char
 import Text.Read
 import Prelude hiding (lookup)
-import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 import Data.List
 import Data.List.Split
 

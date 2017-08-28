@@ -28,7 +28,7 @@ where
 import Prelude
 import Control.Monad
 import qualified Data.Text as T
-import qualified Data.Map as M
+import qualified Data.Map.Strict as M
 import Control.Applicative
 import Data.Maybe
 import Data.List
