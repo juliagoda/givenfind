@@ -129,7 +129,7 @@ secureConvertMonad text indexNumb = if indexNumb < 0 || indexNumb > (((fromJust 
 -- returns all words, that have at the end units of length
 getUnitsNumber :: [String] -> String -> Maybe [String] -> Maybe [String]
 getUnitsNumber wordList prevEl (Just (x:xs)) =  case help wordList x of
-                                             True -> if (isDigit . head) x then liftM (x :) (getUnitsNumber wordList x (Just xs)) else liftM ((prevEl ++ x) :) (getUnitsNumber wordList x $ Just xs)
+                                             True -> if (isDigit . head) x then liftM (x :) (getUnitsNumber wordList x (Just xs)) else if (isDigit . head) prevEl then liftM ((prevEl ++ x) :) (getUnitsNumber wordList x $ Just xs) else getUnitsNumber wordList x $ Just xs
                                              False -> getUnitsNumber wordList x $ Just xs
 
 getUnitsNumber wordList prevEl  (Just _) = Just []
