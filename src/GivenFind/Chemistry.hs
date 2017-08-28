@@ -4,9 +4,11 @@
             ,TemplateHaskell #-}
              
 module GivenFind.Chemistry  
-() where  
+( 
+) where  
 
 import GivenFind
+import GivenFind.Geography (listOfTemperatures, listOfDistances)
 import Control.Monad
 import Control.Applicative
 import Radium.Element
@@ -35,11 +37,6 @@ import Data.List.Split
 -- physical constants -> L-atm/mol-deg, gas constant, gas constants
 -- oxidation numbers -> oxidation number, oxidation numbers
 
-tempNumb :: [String]
-tempNumb = ["oC","^oC","°C","°F","oF","^oF","°K","oK","^oK","°N","oN","^oN"]
-
-distanceSymb :: [String]
-distanceSymb =  ["km","kilometres","m","metres","cm","centimetres","mm","millimetres","kilometre","centimetre","millimetre"]
 
 surfaceSymb :: [String]
 surfaceSymb = ["cm2","m2","km2","mm2","cm^2","m^2","km^2","mm^2"]

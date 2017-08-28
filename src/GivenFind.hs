@@ -21,6 +21,7 @@ module GivenFind
 , stringToText
 , secureConvert
 , secureConvertMonad
+, getUnitsNumber
 )
 where
     
@@ -30,6 +31,8 @@ import qualified Data.Text as T
 import qualified Data.Map as M
 import Control.Applicative
 import Data.Maybe
+import Data.List
+import Data.Char
 
 {- $intro
  #intro#
@@ -121,3 +124,22 @@ secureConvert text indexNumb = if indexNumb < 0 || indexNumb > (length text - 1)
 -- secure searching in text during conversions
 secureConvertMonad :: Maybe [String] -> Int -> Maybe String
 secureConvertMonad text indexNumb = if indexNumb < 0 || indexNumb > (((fromJust . fmap length)  text) - 1) then Just "" else liftM (!! indexNumb) text
+
+-- finds the easiest form of units - number space unit
+-- returns all words, that have at the end units of length
+getUnitsNumber :: [String] -> String -> Maybe [String] -> Maybe [String]
+getUnitsNumber wordList prevEl (Just (x:xs)) =  case help wordList x of
+                                             True -> if (isDigit . head) x then liftM (x :) (getUnitsNumber wordList x (Just xs)) else liftM ((prevEl ++ x) :) (getUnitsNumber wordList x $ Just xs)
+                                             False -> getUnitsNumber wordList x $ Just xs
+
+getUnitsNumber wordList prevEl  (Just _) = Just []
+getUnitsNumber wordList prevEl _ = Nothing
+
+
+
+-- if given word has end, that matches to any word from given list, returns True. For example if "cm" isInfixOf "123cm"
+help :: [String] -> String -> Bool
+help (x:xs) word = case isInfixOf x word of
+                        True -> True
+                        _ -> help xs word
+help _ word = False

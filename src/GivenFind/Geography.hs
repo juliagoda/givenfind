@@ -45,7 +45,7 @@ listOfNominalScales txt = let
                                   checkIfListEmpty $ itScales (getNominalIndexes getText) getText
 
 listOfDistances :: String -> Maybe [Distance]
-listOfDistances txt = checkIfListEmpty . convertDistances . getDistances distanceSymb "" . convShortTypes "" . return . removelastPuncs . removefirstPuncs . mapText $ txt
+listOfDistances txt = checkIfListEmpty . convertDistances . getUnitsNumber distanceSymb "" . convShortTypes "" . return . removelastPuncs . removefirstPuncs . mapText $ txt
 
 listOfLevels :: String -> Maybe [String]
 listOfLevels txt = checkIfListEmpty . getLevels "" . convertLvlTypes . return . removelastPuncs . removefirstPuncs $ mapText txt
@@ -129,16 +129,6 @@ help _ word = False
 itScales :: [Int] -> Maybe [String] -> Maybe [String]
 itScales (x:xs) list = liftM2 (:) (getNominalScales list x) (itScales xs list)
 itScales _ list = Just []
-
-
--- returns all words, that have at the end units of length
-getDistances :: [String] -> String -> Maybe [String] -> Maybe [String]
-getDistances wordList prevEl (Just (x:xs)) =  case help wordList x of
-                                             True -> if (isDigit . head) x then liftM (x :) (getDistances wordList x (Just xs)) else liftM ((prevEl ++ x) :) (getDistances wordList x $ Just xs)
-                                             False -> getDistances wordList x $ Just xs
-
-getDistances wordList prevEl  (Just _) = Just []
-getDistances wordList prevEl _ = Nothing
 
 
 -- converts units of length, that are different from meters (Distance is a type for distances in meters)
