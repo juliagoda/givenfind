@@ -4,6 +4,7 @@
   * [Questions - examples](#questions-\--examples)  
   * [Physics - examples](#physics-\--examples)  
   * [Geography - examples](#geography-\--examples)  
+  * [Chemistry - examples](#chemistry-\--examples)  
 2. [Installation](#installation)  
   * [As project](#as-project)  
   * [Including in other projects](#including-in-other-projects)  
@@ -29,6 +30,7 @@ parameters - your text and searched symbol or even list of symbols.
 
 import qualified GivenFind.Physics as P  
 import qualified GivenFind.Questions as Q  
+...
 
 
 <br/>
@@ -208,6 +210,66 @@ import GivenFind.Geography
   
 Results with other types than String or Text have sense because of existing types in other modules like "Longitude" or "Latitude". 
 
+--
+
+
+<br/>
+
+### Chemistry - examples
+
+import GivenFind.Chemistry  
+
+<br/>
+
+`listOfSurfaces "Convert 12 cm2 to m2"`
+
+*Result:    Just ["12cm2"]*
+
+--
+
+`listOfDens "The density of water at 20oC is 0.9982 g/mL. Of the two sets of density measurements, which set is more accurate?"`
+
+*Result:    Just ["0.9982g/mL"]*
+
+--
+
+`listOfMass "Convert 455 mg to kg"`
+
+*Result:    Just ["455mg"]*
+
+--
+
+`listOfSubAtoms "An isotope with 60 protons and 60 neutrons should be stable"`
+
+*Result:    Just ["60protons","60neutrons"]*
+
+--
+
+`listOfPress "Atmospheric pressure in cities that have an altitude of about a mile, such as Denver and Reno, typically have an atmospheric pressure of about 6.4x102 torr. What is the pressure in atmospheres?"`
+
+*Result:    Just ["6.4x102torr"]*
+
+--
+
+`listOfElem "The oxidation number of chromium in dichromate is:"`
+
+*Result:    Just [Cr]*
+
+--
+
+`listOfGroups "The oxidation state of Group VIIA (17) in binary compounds is (except for dihalogen compounds, e.g., ICl):"`
+
+*Result:    Just ["VIIA"]*
+
+--
+
+`listOfMoles "How many moles of HCl are required for complete reaction of 0.40 moles of zinc?"`
+
+*Result:    Just ["0.40moles"]*
+
+--
+
+
 
 <br/>
 <br/>
@@ -233,7 +295,7 @@ Open stack.yaml file in your project directory. Below line with "packages:", add
 
 *\- location:*  <br/>
 *git: https://github.com/juliagoda/givenfind.git* <br/>
-*commit: 19c9450e2248b0b89a36b1bf8ab51af356142c89* <br/>
+*commit: 6630d974c279493bc0ccf3729e004b357d7a5ded* <br/>
   
 Below line with "extra-deps:" add lines with external dependencies:  
 
@@ -243,6 +305,7 @@ Below line with "extra-deps:" add lines with external dependencies:
 *\- http-client-0.4.31.2* <br/>
 *\- http-client-tls-0.2.4.1* <br/>
 *\- wreq-0.4.1.0* <br/>
+*\- radium-0.8.0* <br/>
 
 install external dependencies with command:  
 
