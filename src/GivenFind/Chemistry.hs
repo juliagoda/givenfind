@@ -60,4 +60,4 @@ pressSymb :: [String]
 pressSymb = ["atm", "torr"]
 
 tabGroupSymb :: [String]
-tabGroupSymb = ["1A", "2A", "3A", "4A", "5A", "6A", "7A", "8A", "IA", "IIA", "IIIA", "IVA", "VA", "VIA", "VIIA", "VIIIA"]
+tabGroupSymb = ["1A", "2A", "3B", "4B", "5B", "6B", "7B", "8", "1B", "2B", "3A", "4A", "5A", "6A", "7A", "8A", "IA", "IIA", "IIIB", "IVB", "VB", "VIB", "VIIB", "VIII", "IB", "IIB", "IIIA", "IVA", "VA", "VIA", "VIIA", "VIIIA"]
