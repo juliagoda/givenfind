@@ -51,47 +51,62 @@ import Data.List.Split
 -- oxidation numbers -> oxidation number, oxidation numbers
 
 
+-- finds for example "5 cm2"
 listOfSurfaces :: String -> Maybe [String]
 listOfSurfaces txt = getUnitsNumber surfaceSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "4 lbs/l"
 listOfDens :: String -> Maybe [String]
 listOfDens txt = getUnitsNumber densSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "5 kg"
 listOfMass :: String -> Maybe [String]
 listOfMass txt = getUnitsNumber massSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "3 neutrons"
 listOfSubAtoms :: String -> Maybe [String]
 listOfSubAtoms txt = getUnitsNumber subAtoms "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "6 ppt"
 listOfPseudoUnits :: String -> Maybe [String]
 listOfPseudoUnits txt = getUnitsNumber pseudoUnits "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "2 L-atm/mol-deg"
 listOfConstants :: String -> Maybe [String]
 listOfConstants txt = getUnitsNumber physConstants "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "2 atm"
 listOfPress :: String -> Maybe [String]
 listOfPress txt = getUnitsNumber pressSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "group IIA"
 listOfGroups :: String -> Maybe [String]
 listOfGroups txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["group","Group","groups","Groups"]
 
+-- finds for example "period 1"
 listOfPeriods :: String -> Maybe [String]
 listOfPeriods txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["period","Period","periods","Periods"]
 
+-- finds for example "7 moles"
 listOfMoles :: String -> Maybe [String]
 listOfMoles txt = getUnitsNumber ["mole","moles"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "10 atoms"
 listOfAtoms :: String -> Maybe [String]
 listOfAtoms txt = getUnitsNumber ["atom","atoms"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "6 molecules"
 listOfMolecules :: String -> Maybe [String]
 listOfMolecules txt = getUnitsNumber ["molecule","molecules"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "1 oxidation number"
 listOfOxNumb :: String -> Maybe [String]
 listOfOxNumb txt = getUnitsNumber ["oxidation number","oxidation numbers"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
+-- finds for example "carbon" or "H"
 listOfElem :: String -> Maybe [Element]
 listOfElem txt = getElements . appendChemResults chemSymb . removelastPuncs . removefirstPuncs $ mapText txt
+
 
 
 surfaceSymb :: [String]
@@ -122,6 +137,8 @@ chemSymb :: [(String, String)]
 chemSymb = ([("H", "hydrogen"), ("He", "helium"),("Li", "lithium"),("Be", "beryllium") ,("B", "boron"),("C", "carbon"),("N", "nitrogen"),("O", "oxygen"),("F", "fluorine"),("Ne", "neon"),("Na", "sodium"),("Mg", "magnesium"),("Al", "alluminium"),("Si", "silicon"),("P", "phosphous"),("S", "sulphur"),("Cl", "chlorine"),("Ar", "argon"),("K", "potassium"),("Ca", "calcium"),("Sc", "scandium"),("Ti", "titanium"),("V", "vanadium"),("Cr", "chromium"),("Mn", "manganese"),("Fe", "iron"),("Co", "cobalt"),("Ni", "nickel"),("Cu", "copper"),("Zn", "zinc"),("Ga", "gallium"),("Ge", "germanium"),("As", "arsenic"),("Se", "selenium"),("Br", "bromine"),("Kr", "krypton"),("Rb", "rubidium"),("Sr", "strontium"),("Y", "yttrium")])
 
 
+
+
 -- finds groups and periods in the periodic table. Finds for example  "group IIIA" or "Period 6" or "group IIA and IIIB"
 getFromTable :: Maybe [String] -> [String] -> Maybe [String]
 getFromTable (Just (x:y:z:s:xs)) wordsList = case any (==True) . map (==x) $ wordsList of
@@ -138,16 +155,19 @@ getFromTable (Just _) wordsList = Just []
 getFromTable _ wordsList = Nothing
 
 
-
+-- adds to list all keys from Map chemSymb, that were found in text
 lookupChemKeys :: [(String,String)] -> [String] -> Maybe [String]
 lookupChemKeys list text = if null [key | (key,value) <- list, key `elem` text] then Nothing else Just [key | (key,value) <- list, key `elem` text]
 
+-- adds to list all keys from Map chemSymb, which values were found in text
 lookupChemValues :: [(String,String)] -> [String] -> Maybe [String]
 lookupChemValues list text = if null [key | (key,value) <- list, value `elem` text] then Nothing else Just [key | (key,value) <- list, value `elem` text]
 
+-- adds two lists with symbols
 appendChemResults :: [(String,String)] -> [String] -> Maybe [String]
 appendChemResults list text  = mappend (lookupChemKeys list text) (lookupChemValues list text)
 
+-- converts String to Element, to use functions from Radium.Element. See https://hackage.haskell.org/package/radium-0.4/candidate/docs/src/Radium-Element.html#Element
 getElements :: Maybe [String] -> Maybe [Element]
 getElements (Just x) = Just [elementBySymbol value | value <- x, not.null $ value]
 getElements _ = Nothing
