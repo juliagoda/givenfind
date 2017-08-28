@@ -108,11 +108,11 @@ instance SearchInText String where
     
     
  -- list of words in task (needed when there are no questions)   
-data CommandWords = Find | Fill | Solve | Calculate | Complete | Use | Round | Substract | Graph | Evaluate | Move | Consider | Write | Assume | Determine | Perform | Express | Change | Assuming deriving (Show)
+data CommandWords = Find | Fill | Solve | Calculate | Complete | Use | Round | Substract | Graph | Evaluate | Move | Consider | Write | Assume | Determine | Perform | Express | Change | Assuming | Convert deriving (Show)
 
 -- list of words, that mostly are written in text one place after dot character
 listWords :: [CommandWords]
-listWords = [Find, Fill, Solve, Calculate, Complete, Use, Round, Substract, Graph, Evaluate, Move, Consider, Write, Assume, Determine, Perform, Express, Change, Assuming]
+listWords = [Find, Fill, Solve, Calculate, Complete, Use, Round, Substract, Graph, Evaluate, Move, Consider, Write, Assume, Determine, Perform, Express, Change, Assuming, Convert]
 
 -- conversion from CommandWords data type to String
 listWordString :: [String]
