@@ -4,7 +4,20 @@
             ,TemplateHaskell #-}
              
 module GivenFind.Chemistry  
-( 
+( listOfSurfaces
+, listOfDens
+, listOfMass
+, listOfSubAtoms
+, listOfAtoms
+, listOfPseudoUnits
+, listOfConstants
+, listOfPress
+, listOfGroups
+, listOfPeriods
+, listOfMoles
+, listOfMolecules
+, listOfOxNumb
+, listOfElem
 ) where  
 
 import GivenFind
@@ -36,6 +49,49 @@ import Data.List.Split
 -- pressure -> atm, torr
 -- physical constants -> L-atm/mol-deg, gas constant, gas constants
 -- oxidation numbers -> oxidation number, oxidation numbers
+
+
+listOfSurfaces :: String -> Maybe [String]
+listOfSurfaces txt = getUnitsNumber surfaceSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfDens :: String -> Maybe [String]
+listOfDens txt = getUnitsNumber densSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfMass :: String -> Maybe [String]
+listOfMass txt = getUnitsNumber massSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfSubAtoms :: String -> Maybe [String]
+listOfSubAtoms txt = getUnitsNumber subAtoms "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfPseudoUnits :: String -> Maybe [String]
+listOfPseudoUnits txt = getUnitsNumber pseudoUnits "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfConstants :: String -> Maybe [String]
+listOfConstants txt = getUnitsNumber physConstants "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfPress :: String -> Maybe [String]
+listOfPress txt = getUnitsNumber pressSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfGroups :: String -> Maybe [String]
+listOfGroups txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["group","Group","groups","Groups"]
+
+listOfPeriods :: String -> Maybe [String]
+listOfPeriods txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["period","Period","periods","Periods"]
+
+listOfMoles :: String -> Maybe [String]
+listOfMoles txt = getUnitsNumber ["mole","moles"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfAtoms :: String -> Maybe [String]
+listOfAtoms txt = getUnitsNumber ["atom","atoms"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfMolecules :: String -> Maybe [String]
+listOfMolecules txt = getUnitsNumber ["molecule","molecules"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfOxNumb :: String -> Maybe [String]
+listOfOxNumb txt = getUnitsNumber ["oxidation number","oxidation numbers"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+
+listOfElem :: String -> Maybe [Element]
+listOfElem txt = getElements . appendChemResults chemSymb . removelastPuncs . removefirstPuncs $ mapText txt
 
 
 surfaceSymb :: [String]
