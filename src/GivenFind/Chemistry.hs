@@ -81,7 +81,7 @@ listOfPress txt = getUnitsNumber pressSymb "" $ return . removelastPuncs . remov
 
 -- finds for example "group IIA"
 listOfGroups :: String -> Maybe [String]
-listOfGroups txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["group","Group","groups","Groups"]
+listOfGroups txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["group","Group","groups","Groups","electron structure of the"]
 
 -- finds for example "period 1"
 listOfPeriods :: String -> Maybe [String]
