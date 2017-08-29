@@ -4,23 +4,11 @@
             ,TemplateHaskell #-}
              
 module GivenFind.Chemistry  
-( listOfSurfaces
-, listOfDens
-, listOfMass
-, listOfSubAtoms
-, listOfAtoms
-, listOfPseudoUnits
-, listOfConstants
-, listOfPress
-, listOfGroups
-, listOfPeriods
-, listOfMoles
-, listOfMolecules
-, listOfOxNumb
-, listOfElem
+( SearchChemSymbols(..)
 ) where  
 
 import GivenFind
+import GivenFind.Questions
 import GivenFind.Geography (listOfTemperatures, listOfDistances)
 import Control.Monad
 import Control.Applicative
@@ -31,6 +19,7 @@ import Data.Maybe
 import Data.Char
 import Text.Read
 import Prelude hiding (lookup)
+import qualified Data.Text as DT
 import qualified Data.Map.Strict as M
 import Data.List
 import Data.List.Split
@@ -51,61 +40,115 @@ import Data.List.Split
 -- oxidation numbers -> oxidation number, oxidation numbers
 
 
--- finds for example "5 cm2"
-listOfSurfaces :: String -> Maybe [String]
-listOfSurfaces txt = getUnitsNumber surfaceSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
 
--- finds for example "4 lbs/l"
-listOfDens :: String -> Maybe [String]
-listOfDens txt = getUnitsNumber densSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+class SearchInText s => SearchChemSymbols s where
+    
+    -- finds for example "5 cm2"
+    listOfSurfaces :: s -> Maybe [s]
+    
+    -- finds for example "4 lbs/l"
+    listOfDens :: s -> Maybe [s]
+    
+    -- finds for example "5 kg"
+    listOfMass :: s -> Maybe [s]
+    
+    -- finds for example "3 neutrons"
+    listOfSubAtoms :: s -> Maybe [s]
+    
+    -- finds for example "6 ppt"
+    listOfPseudoUnits :: s -> Maybe [s]
+    
+    -- finds for example "2 L-atm/mol-deg"
+    listOfConstants :: s -> Maybe [s]
+    
+    -- finds for example "2 atm"
+    listOfPress :: s -> Maybe [s]
+    
+    -- finds for example "group IIA"
+    listOfGroups :: s -> Maybe [s]
+    
+    -- finds for example "period 1"
+    listOfPeriods :: s -> Maybe [s]
+    
+    -- finds for example "7 moles"
+    listOfMoles :: s -> Maybe [s]
+    
+    -- finds for example "10 atoms"
+    listOfAtoms :: s -> Maybe [s]
+    
+    -- finds for example "6 molecules"
+    listOfMolecules :: s -> Maybe [s]
+    
+    -- finds for example "1 oxidation number"
+    listOfOxNumb :: s -> Maybe [s]
+    
+    -- finds for example "carbon" or "H"
+    listOfElem :: s -> Maybe [Element]
+    
+    
+    
+    
+instance SearchChemSymbols String where
+    
+    listOfSurfaces txt = checkIfListEmpty . getUnitsNumber surfaceSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfDens txt = checkIfListEmpty . getUnitsNumber densSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfMass txt = checkIfListEmpty . getUnitsNumber massSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfSubAtoms txt = checkIfListEmpty . getUnitsNumber subAtoms "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfPseudoUnits txt = checkIfListEmpty . getUnitsNumber pseudoUnits "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfConstants txt = checkIfListEmpty . getUnitsNumber physConstants "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfPress txt = checkIfListEmpty . getUnitsNumber pressSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfGroups txt = checkIfListEmpty $ getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["group","Group","groups","Groups","electron structure of the"]
+    
+    listOfPeriods txt = checkIfListEmpty $ getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["period","Period","periods","Periods"]
+    
+    listOfMoles txt = checkIfListEmpty . getUnitsNumber ["mole","moles"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfAtoms txt = checkIfListEmpty . getUnitsNumber ["atom","atoms"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfMolecules txt = checkIfListEmpty . getUnitsNumber ["molecule","molecules"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfOxNumb txt = checkIfListEmpty . getUnitsNumber ["oxidation number","oxidation numbers"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfElem txt = checkIfListEmpty . getElements . appendChemResults chemSymb . removelastPuncs . removefirstPuncs $ mapText txt
 
--- finds for example "5 kg"
-listOfMass :: String -> Maybe [String]
-listOfMass txt = getUnitsNumber massSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "3 neutrons"
-listOfSubAtoms :: String -> Maybe [String]
-listOfSubAtoms txt = getUnitsNumber subAtoms "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "6 ppt"
-listOfPseudoUnits :: String -> Maybe [String]
-listOfPseudoUnits txt = getUnitsNumber pseudoUnits "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "2 L-atm/mol-deg"
-listOfConstants :: String -> Maybe [String]
-listOfConstants txt = getUnitsNumber physConstants "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "2 atm"
-listOfPress :: String -> Maybe [String]
-listOfPress txt = getUnitsNumber pressSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "group IIA"
-listOfGroups :: String -> Maybe [String]
-listOfGroups txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["group","Group","groups","Groups","electron structure of the"]
-
--- finds for example "period 1"
-listOfPeriods :: String -> Maybe [String]
-listOfPeriods txt = getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText txt)) ["period","Period","periods","Periods"]
-
--- finds for example "7 moles"
-listOfMoles :: String -> Maybe [String]
-listOfMoles txt = getUnitsNumber ["mole","moles"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "10 atoms"
-listOfAtoms :: String -> Maybe [String]
-listOfAtoms txt = getUnitsNumber ["atom","atoms"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "6 molecules"
-listOfMolecules :: String -> Maybe [String]
-listOfMolecules txt = getUnitsNumber ["molecule","molecules"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "1 oxidation number"
-listOfOxNumb :: String -> Maybe [String]
-listOfOxNumb txt = getUnitsNumber ["oxidation number","oxidation numbers"] "" $ return . removelastPuncs . removefirstPuncs $ mapText txt
-
--- finds for example "carbon" or "H"
-listOfElem :: String -> Maybe [Element]
-listOfElem txt = getElements . appendChemResults chemSymb . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    
+instance SearchChemSymbols DT.Text where
+    
+    listOfSurfaces txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber surfaceSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfDens txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber densSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfMass txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber massSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfSubAtoms txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber subAtoms "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfPseudoUnits txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber pseudoUnits "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfConstants txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber physConstants "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfPress txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber pressSymb "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfGroups txt = checkIfListEmpty $ liftM (map DT.pack) $ getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText . DT.unpack $ txt)) ["group","Group","groups","Groups","electron structure of the"]
+    
+    listOfPeriods txt = checkIfListEmpty $ liftM (map DT.pack) $ getFromTable ( (return . removelastPuncs . removefirstPuncs)  (mapText . DT.unpack $ txt)) ["period","Period","periods","Periods"]
+    
+    listOfMoles txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber ["mole","moles"] "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfAtoms txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber ["atom","atoms"] "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfMolecules txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber ["molecule","molecules"] "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfOxNumb txt = checkIfListEmpty . liftM (map DT.pack) . getUnitsNumber ["oxidation number","oxidation numbers"] "" $ return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfElem txt = checkIfListEmpty . getElements . appendChemResults chemSymb . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
 
 
 
