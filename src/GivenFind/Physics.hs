@@ -3,7 +3,7 @@
             ,TypeSynonymInstances #-}
             
 module GivenFind.Physics  
-( SearchSymbols(..)  
+( SearchPhySymbols(..)  
 ) where 
 
 import Prelude hiding (lookup)
@@ -19,7 +19,7 @@ import Data.Maybe
 
     
     
-class SearchInText s => SearchSymbols s where
+class SearchInText s => SearchPhySymbols s where
     
     -- finds given unit and number in a text, if doesn't find - returns None
     searchYourOneSymb :: s -> s -> Symbols (s, Double)
@@ -37,7 +37,7 @@ class SearchInText s => SearchSymbols s where
     searchAllPhys :: s -> Symbols [(s, s)]
     
     
-instance SearchSymbols String where
+instance SearchPhySymbols String where
     
     searchYourOneSymb text symbol =  liftM (head) $ convertFiltred (mapText text) $ takeOnlyTrue (mapText text) $ bindList $ check (singleton symbol) $ listSub (mapText text) (singleton symbol) 
     
@@ -50,7 +50,7 @@ instance SearchSymbols String where
     searchAllPhys text = convertFiltredMore (mapText text) $ takeOnlyTrue (mapText text) $ bindList $ check phySymbols $ listSub (mapText text) phySymbols
     
     
-instance SearchSymbols T.Text where
+instance SearchPhySymbols T.Text where
     
     searchYourOneSymb text symbol = liftM (head) $ convertFiltredToText $ convertFiltred (mapText (T.unpack text)) $ takeOnlyTrue (mapText (T.unpack text)) $ bindList $ check (singleton (T.unpack symbol)) $ listSub (mapText (T.unpack text)) (singleton (T.unpack symbol)) 
     
