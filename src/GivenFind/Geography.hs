@@ -4,17 +4,11 @@
             ,TemplateHaskell #-}
              
 module GivenFind.Geography  
-( listOfHours
-, listOfScales
-, listOfNominalScales
-, listOfDistances
-, listOfLevels
-, listOfTemperatures
-, listOfTitudes
-, listOfRadians
+( SearchGeoSymbols(..) 
 ) where  
 
 import GivenFind
+import GivenFind.Questions
 import GivenFind.Geography.Types
 import Control.Monad
 import Control.Applicative
@@ -24,6 +18,7 @@ import Data.Geolocation.Reverse.Types as T
 import Data.Maybe
 import Data.Char
 import Text.Read
+import qualified Data.Text as DT
 import Prelude hiding (lookup)
 import qualified Data.Map.Strict as M
 import Data.List
@@ -32,32 +27,73 @@ import Data.Time.LocalTime
 import Data.Fixed
 
 
-listOfHours :: String -> Maybe [TimeOfDay]
-listOfHours txt = checkIfListEmpty . convertHours . getHours . return . removelastPuncs . removefirstPuncs $ mapText txt
 
-listOfScales :: String -> Maybe [String]
-listOfScales txt = checkIfListEmpty . checkForwNumbers . return . removelastPuncs . removefirstPuncs $ mapText txt
 
-listOfNominalScales :: String -> Maybe [String]
-listOfNominalScales txt = let
+class SearchInText s => SearchGeoSymbols s where
+    
+    listOfHours :: s -> Maybe [TimeOfDay]
+
+    listOfScales :: s -> Maybe [s]
+
+    listOfNominalScales :: s -> Maybe [s]
+
+    listOfDistances :: s -> Maybe [Distance]
+
+    listOfLevels :: s -> Maybe [s]
+    
+    listOfTemperatures :: s -> Maybe [s]
+    
+    listOfTitudes :: s -> Maybe [Titudes]
+    
+    listOfRadians :: s -> Maybe [Heading]
+    
+    
+    
+instance SearchGeoSymbols String where
+    
+    listOfHours txt = checkIfListEmpty . convertHours . getHours . return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfScales txt = checkIfListEmpty . checkForwNumbers . return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfNominalScales txt = let
                               getText = return . removelastPuncs . removefirstPuncs $ mapText txt
                               in
                                   checkIfListEmpty $ itScales (getNominalIndexes getText) getText
-
-listOfDistances :: String -> Maybe [Distance]
-listOfDistances txt = checkIfListEmpty . convertDistances . getUnitsNumber distanceSymb "" . convShortTypes "" . return . removelastPuncs . removefirstPuncs . mapText $ txt
-
-listOfLevels :: String -> Maybe [String]
-listOfLevels txt = checkIfListEmpty . getLevels "" . convertLvlTypes . return . removelastPuncs . removefirstPuncs $ mapText txt
-
-listOfTemperatures :: String -> Maybe [String]
-listOfTemperatures txt = checkIfListEmpty . getTemperatures "" . return . removelastPuncs . removefirstPuncs $ mapText txt
-
-listOfTitudes :: String -> Maybe [Titudes]
-listOfTitudes txt = checkIfListEmpty . convertTitudes . getTitudes . return . removelastPuncs . removefirstPuncs $ mapText txt
-
-listOfRadians :: String -> Maybe [Heading]
-listOfRadians txt = checkIfListEmpty . convertDegrees . reduceDegChar . getDegrees . return . removelastPuncs . removefirstPuncs $ mapText txt
+                                  
+    listOfDistances txt = checkIfListEmpty . convertDistances . getUnitsNumber distanceSymb "" . convShortTypes "" . return . removelastPuncs . removefirstPuncs . mapText $ txt
+    
+    listOfLevels txt = checkIfListEmpty . getLevels "" . convertLvlTypes . return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfTemperatures txt = checkIfListEmpty . getTemperatures "" . return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfTitudes txt = checkIfListEmpty . convertTitudes . getTitudes . return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    listOfRadians txt = checkIfListEmpty . convertDegrees . reduceDegChar . getDegrees . return . removelastPuncs . removefirstPuncs $ mapText txt
+    
+    
+    
+instance SearchGeoSymbols DT.Text where
+    
+    listOfHours txt = checkIfListEmpty . convertHours . getHours . return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfScales txt = checkIfListEmpty . liftM (map DT.pack) . checkForwNumbers . return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfNominalScales txt = let
+                              getText = return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+                              in
+                                  checkIfListEmpty $ liftM (map DT.pack) $ itScales (getNominalIndexes getText) getText
+                                  
+    listOfDistances txt = checkIfListEmpty . convertDistances . getUnitsNumber distanceSymb "" . convShortTypes "" . return . removelastPuncs . removefirstPuncs . mapText   $ DT.unpack txt
+    
+    listOfLevels txt = checkIfListEmpty . liftM (map DT.pack) . getLevels "" . convertLvlTypes . return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfTemperatures txt = checkIfListEmpty . liftM (map DT.pack) . getTemperatures "" . return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfTitudes txt = checkIfListEmpty . convertTitudes . getTitudes . return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    listOfRadians txt = checkIfListEmpty . convertDegrees . reduceDegChar . getDegrees . return . removelastPuncs . removefirstPuncs $ mapText $ DT.unpack txt
+    
+    
 
 
 --newtype Latitude = Latitude Double deriving (Eq, Show, Ord) -- N / S
