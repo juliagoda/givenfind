@@ -295,7 +295,7 @@ Open stack.yaml file in your project directory. Below line with "packages:", add
 
 *\- location:*  <br/>
 *git: https://github.com/juliagoda/givenfind.git* <br/>
-*commit: 6630d974c279493bc0ccf3729e004b357d7a5ded* <br/>
+*commit: 5f1cd3222637b6abc8d0116f04cab5af6d824938* <br/>
   
 Below line with "extra-deps:" add lines with external dependencies:  
 
