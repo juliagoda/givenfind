@@ -342,8 +342,7 @@ To fix your problems with configuration, installation, creation or update of you
 Just to test modules classes run the commands (where stack.yaml is):
 
 ```
-stack setup
-stack ghci
+stack test
 ```
 
 <br/>
