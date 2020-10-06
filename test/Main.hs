@@ -9,4 +9,5 @@ import Questions
 
 
 main :: IO Bool
-main = Questions.tests
+main = Questions.tests 
+    >> Physics.tests
