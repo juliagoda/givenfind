@@ -9,20 +9,14 @@ module GivenFind.Chemistry
 
 import GivenFind
 import GivenFind.Questions
-import GivenFind.Geography (listOfTemperatures, listOfDistances)
 import Control.Monad
-import Control.Applicative
 import Radium.Element
-import Radium.Formats.Condensed
-import Radium.Formats.Smiles
+import Radium.Formats.Condensed()
+import Radium.Formats.Smiles()
 import Data.Maybe
 import Data.Char
-import Text.Read
 import Prelude hiding (lookup)
 import qualified Data.Text as DT
-import qualified Data.Map.Strict as M
-import Data.List
-import Data.List.Split
 
 -- density -> g/cm3, g/cm^3, g/mL, kg/l, kg/L, lbs/L, lbs/l
 -- mass -> g, kg, mg, gram, grams, L, mL, Liters, liters, ga, oz, ounces
@@ -173,8 +167,8 @@ physConstants = ["L-atm/mol-deg", "gas constant", "gas constants"]
 pressSymb :: [String]
 pressSymb = ["atm", "torr"]
 
-tabGroupSymb :: [String]
-tabGroupSymb = ["1A", "2A", "3B", "4B", "5B", "6B", "7B", "8", "1B", "2B", "3A", "4A", "5A", "6A", "7A", "8A", "IA", "IIA", "IIIB", "IVB", "VB", "VIB", "VIIB", "VIII", "IB", "IIB", "IIIA", "IVA", "VA", "VIA", "VIIA", "VIIIA"]
+--tabGroupSymb :: [String]
+--tabGroupSymb = ["1A", "2A", "3B", "4B", "5B", "6B", "7B", "8", "1B", "2B", "3A", "4A", "5A", "6A", "7A", "8A", "IA", "IIA", "IIIB", "IVB", "VB", "VIB", "VIIB", "VIII", "IB", "IIB", "IIIA", "IVA", "VA", "VIA", "VIIA", "VIIIA"]
 
 chemSymb :: [(String, String)]
 chemSymb = ([("H", "hydrogen"), ("He", "helium"),("Li", "lithium"),("Be", "beryllium") ,("B", "boron"),("C", "carbon"),("N", "nitrogen"),("O", "oxygen"),("F", "fluorine"),("Ne", "neon"),("Na", "sodium"),("Mg", "magnesium"),("Al", "alluminium"),("Si", "silicon"),("P", "phosphous"),("S", "sulphur"),("Cl", "chlorine"),("Ar", "argon"),("K", "potassium"),("Ca", "calcium"),("Sc", "scandium"),("Ti", "titanium"),("V", "vanadium"),("Cr", "chromium"),("Mn", "manganese"),("Fe", "iron"),("Co", "cobalt"),("Ni", "nickel"),("Cu", "copper"),("Zn", "zinc"),("Ga", "gallium"),("Ge", "germanium"),("As", "arsenic"),("Se", "selenium"),("Br", "bromine"),("Kr", "krypton"),("Rb", "rubidium"),("Sr", "strontium"),("Y", "yttrium")])
@@ -194,13 +188,13 @@ getFromTable (Just (x:y:z:s:xs)) wordsList = case any (==True) . map (==x) $ wor
                                              
 getFromTable (Just (_:xs)) wordsList = getFromTable (Just xs) wordsList
                                      
-getFromTable (Just _) wordsList = Just []                               
-getFromTable _ wordsList = Nothing
+getFromTable (Just _) _ = Just []                               
+getFromTable _ _ = Nothing
 
 
 -- adds to list all keys from Map chemSymb, that were found in text
 lookupChemKeys :: [(String,String)] -> [String] -> Maybe [String]
-lookupChemKeys list text = if null [key | (key,value) <- list, key `elem` text] then Nothing else Just [key | (key,value) <- list, key `elem` text]
+lookupChemKeys list text = if null [key | (key,_) <- list, key `elem` text] then Nothing else Just [key | (key,_) <- list, key `elem` text]
 
 -- adds to list all keys from Map chemSymb, which values were found in text
 lookupChemValues :: [(String,String)] -> [String] -> Maybe [String]

@@ -122,7 +122,7 @@ listWordString = [show c | c <- listWords]
 convertDotToComa ::  Char -> Char -> T.Text -> Int -> T.Text -> Maybe T.Text
 convertDotToComa charFrom charTo newText count text = case count <= (length (T.unpack text)) - 1 of 
                                                                                     True -> case T.index text count of 
-                                                                                                charFrom -> if (isDigit (T.index text (secureTextLength (count - 1) ((length (T.unpack text)) - 1)))) && (isDigit (T.index text (secureTextLength (count + 1) ((length (T.unpack text)) - 1)))) then convertDotToComa charFrom charTo (T.snoc newText charTo) (count + 1) text else  convertDotToComa charFrom charTo (T.snoc newText (T.index text count)) (count + 1) text
+                                                                                                _ -> if (isDigit (T.index text (secureTextLength (count - 1) ((length (T.unpack text)) - 1)))) && (isDigit (T.index text (secureTextLength (count + 1) ((length (T.unpack text)) - 1)))) then convertDotToComa charFrom charTo (T.snoc newText charTo) (count + 1) text else  convertDotToComa charFrom charTo (T.snoc newText (T.index text count)) (count + 1) text
                                                                                     False -> Just newText
 
 -- adds dot character one place after question mark
@@ -168,7 +168,7 @@ listCorComSentences texts = do
 -- checks if elements from [String] list are in a text. Maybe monad is needed for filterM
 hh :: [String] -> String -> Maybe Bool
 hh (x:xs) text = if L.isInfixOf x text then Just True else hh xs text
-hh _ text = Just False
+hh _ _ = Just False
 
 -- checks, whether needed question marks have been found as substring in text elements of a list and shows them
 listCorQuestSentences :: Maybe [String] -> Maybe [String]

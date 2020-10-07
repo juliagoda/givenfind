@@ -9,10 +9,9 @@ module GivenFind.Geography
 
 import GivenFind
 import GivenFind.Questions
-import GivenFind.Geography.Types
+import GivenFind.Geography.Types as GT
 import Control.Monad
-import Control.Applicative
-import Data.Geolocation.Reverse
+import Data.Geolocation.Reverse()
 import Geo.Computations
 import Data.Geolocation.Reverse.Types as T
 import Data.Maybe
@@ -43,7 +42,7 @@ class SearchInText s => SearchGeoSymbols s where
     
     listOfTemperatures :: s -> Maybe [s]
     
-    listOfTitudes :: s -> Maybe [Titudes]
+    listOfTitudes :: s -> Maybe [GT.Titudes]
     
     listOfRadians :: s -> Maybe [Heading]
     
@@ -104,8 +103,8 @@ instance SearchGeoSymbols DT.Text where
 distanceSymb :: [String]
 distanceSymb =  ["km","kilometres","m","metres","cm","centimetres","mm","millimetres","kilometre","centimetre","millimetre"]
 
-surfaceSymb :: [String]
-surfaceSymb = ["cm2","m2","km2","mm2","cm^2","m^2","km^2","mm^2"]
+--surfaceSymb :: [String]
+--surfaceSymb = ["cm2","m2","km2","mm2","cm^2","m^2","km^2","mm^2"]
 
 shortNumb :: [(String, String)]
 shortNumb = [("thous.","000"),("thou.","000"),("MM","000000"),("M","000000"),("G","000000000"),("B","000000000"),("BN","000000000")]
@@ -158,13 +157,13 @@ help :: [String] -> String -> Bool
 help (x:xs) word = case isInfixOf x word of
                         True -> True
                         _ -> help xs word
-help _ word = False
+help _ _ = False
 
 
 -- takes as argument indices of "->" and text in monad form and returns list of nominal scales
 itScales :: [Int] -> Maybe [String] -> Maybe [String]
 itScales (x:xs) list = liftM2 (:) (getNominalScales list x) (itScales xs list)
-itScales _ list = Just []
+itScales _ _ = Just []
 
 
 -- converts units of length, that are different from meters (Distance is a type for distances in meters)
@@ -185,8 +184,8 @@ convShortTypes prevEl (Just (x:xs))
     | any (==x) (map fst shortNumb) = liftM2 (:) (liftM (prevEl ++) ((liftM concat . M.lookup x . joinSndWords) shortNumb)) (convShortTypes x $ Just xs)
     | otherwise = liftM (x :) (convShortTypes x $ Just xs)
     
-convShortTypes prevEl (Just _) = Just []
-convertShortTypes prevEl _ = Nothing
+convShortTypes _ (Just _) = Just []
+convShortTypes _ _ = Nothing
 
 
 -- looks for words "above" or "below", then "sea" and "level". Joins these words and adds to list
@@ -207,8 +206,8 @@ getLevels prevEl (Just (x:y:xs)) =  case (help distanceSymb x) && (isInfixOf "se
                                              True -> if (isDigit . head) x then liftM ((intercalate " " [x,y]) :) (getLevels x (Just xs)) else liftM ((intercalate " " [prevEl ++ x,y]) :) (getLevels x $ Just xs)
                                              False -> getLevels x (liftM (y :) $ Just xs)
                                              
-getLevels prevEl (Just _) = Just []
-getLevels prevEl _ = Nothing
+getLevels _ (Just _) = Just []
+getLevels _ _ = Nothing
 
 
 -- returns list of temperatures, if there were found values with '+', '-' or numeric value as first characters of word. Words should have matched endings from list "tempNumb"
@@ -217,8 +216,8 @@ getTemperatures prevEl (Just (x:xs)) = case help tempNumb x of
                                              True -> if ((=='+') . head) x || ((=='-') . head) x || (isDigit . head) x  then liftM (x :) (getTemperatures x (Just xs)) else liftM ((prevEl ++ x) :) (getTemperatures x $ Just xs)
                                              False -> getTemperatures x $ Just xs
                                              
-getTemperatures prevEl (Just _) = Just []
-getTemperatures prevEl _ = Nothing
+getTemperatures _ (Just _) = Just []
+getTemperatures _ _ = Nothing
 
 
 -- finds and returns hours, minutes and seconds, if before time value is found the word "at". "AM" or "PM" can be but not have to after time values.
@@ -271,17 +270,19 @@ getTitudes _ = Nothing
 
 
 -- found words from function "getTitudes" are converted from String to type Titudes, that contains Longitude as well as Latitude
-convertTitudes :: Maybe [String] -> Maybe [Titudes]
+convertTitudes :: Maybe [String] -> Maybe [GT.Titudes]
 convertTitudes titudesList = titudesList >>= mapM (\x -> (return . helpFunc . splitOneOf "o`,°′") x)
 
 
 -- auxiliary function for converted values of found latitudes and longitudes
-helpFunc :: [String] -> Titudes
+helpFunc :: [String] -> GT.Titudes
 helpFunc tab
     | last tab == "N" = if length tab < 3 then Width (T.Latitude (readMaybe (head tab) :: Maybe Double)) else Width $ T.Latitude (readMaybe (intercalate "." [head tab, tab !! 1]) :: Maybe Double)
     | last tab == "S" = if length tab < 3 then Width (T.Latitude (readMaybe (show(-(read (head tab) :: Double))) :: Maybe Double)) else Width $ T.Latitude (readMaybe (show(-(read (intercalate "." [head tab, tab !! 1]) :: Double))) :: Maybe Double)
     | last tab == "E" = if length tab < 3 then Height (T.Longitude (readMaybe (head tab) :: Maybe Double)) else Height $  T.Longitude (readMaybe (intercalate "." [head tab, tab !! 1]) :: Maybe Double)
     | last tab == "W" = if length tab < 3 then Height (T.Longitude (readMaybe (show(-(read (head tab) :: Double))) :: Maybe Double)) else Height $ T.Longitude (readMaybe (show(-(read (intercalate "." [head tab, tab !! 1]) :: Double))) :: Maybe Double)
+
+helpFunc _ = GT.None
 
 
 -- finds and adds to list degrees with numeric values

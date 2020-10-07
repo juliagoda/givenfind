@@ -65,13 +65,13 @@ instance SearchPhySymbols T.Text where
     
     
 singleton :: a -> [a]
-singleton a = case a of a -> [a]
+singleton a = [a]
 
 
 -- if in a list of String have been found some element, then element is returned and function is stopped
 searchFirstPassed :: [String] -> [String] -> [String]
 searchFirstPassed text (x:xs) = if elem x text then [x] else searchFirstPassed text xs
-searchFirstPassed text [] = []
+searchFirstPassed _ [] = []
 
 
 -- instead of empty list, it gives [-1] as not found value or found index of element in text
@@ -83,21 +83,10 @@ changeElemInd el text = case L.elemIndices el text of
                
 -- gets through list of words to find indices and puts indexes numbers in places of words in list
 listSub :: [String] -> [String] -> [[Int]]
-listSub text [[]] = [[-1]]
+listSub _ [[]] = [[-1]]
 listSub text (x:xs) = (changeElemInd x text) : (listSub text xs) -- [Char]
-listSub text _ = init [[-1]] -- trzeba to wyeliminowac
+listSub _ _ = init [[-1]] 
 
-
--- gets through list of words, where list of words is transformed to the next level of list [[[Char]]]
-listSub2 :: [String] -> [[String]] -> [[[Int]]]
-listSub2 text [[]] = [[[-1]]]
-listSub2 text (x:xs) =  (listSub text x) : (listSub2 text xs) -- [[Char]]
-listSub2 text _ = init [[[-1]]]
-
-
--- splits list of String into one two-dimensional list 
-numbAngList :: [String] -> [[String]]
-numbAngList list = map words list
 
 
 -- concatenates list of symbols with found indices
@@ -125,7 +114,7 @@ chooseFromText unit text = case unit of
 
                                 
 -- example
-ll = zip phySymbols (listSub ["magnetic","cubic","area","m^3","m^3"] phySymbols)
+-- ll = zip phySymbols (listSub ["magnetic","cubic","area","m^3","m^3"] phySymbols)
 
 -- removes non found elements with -1
 check :: [String] -> [[Int]] -> [(String,  [Int])]
@@ -133,26 +122,20 @@ check list1 list2 = filter (not . null . filter (/=(-1)) . snd) $ zipSymbolandIn
 
 
 -- converts from Symbols WhereData to real position of number
-findIndexData :: Int -> Symbols WhereData -> Int 
-findIndexData actIndex element = let
-                                        indeks (Symbol OneLeft) = actIndex - 1
-                                        indeks None = -5
-                                    in indeks $ element
+--findIndexData :: Int -> Symbols WhereData -> Int 
+--findIndexData actIndex element = let
+--                                        indeks (Symbol OneLeft) = actIndex - 1
+--                                        indeks None = -5
+--                                    in indeks $ element
 
                                     
 -- converts position of unit number to Symbols WhereData
-findSymbolData :: [String] -> Int -> Symbols WhereData
-findSymbolData text actIndex = let
-                                        indeks (Symbol (-1)) = Symbol OneLeft
-                                        indeks None = None
-                                    in indeks $ convertNumbInt text actIndex
-                  
-                  
--- converts Int to Symbols Int. Function is used for findSymbolData                                   
-convertNumbInt :: [String] -> Int -> Symbols Int
-convertNumbInt text curIndex
-    | (R.readMaybe (secureConvert text (curIndex - 1)) :: Maybe Double) /= Nothing = Symbol (-1)
-    | otherwise = None
+--findSymbolData :: [String] -> Int -> Symbols WhereData
+--findSymbolData text actIndex = let
+--                                        indeks (Symbol (-1)) = Symbol OneLeft
+--                                        indeks None = None
+--                                    in indeks $ convertNumbInt text actIndex
+
 
 
 -- zipped symbols with every matched index in two-dimensional list
@@ -163,7 +146,7 @@ bindList [] = []
 
 bindInts :: String -> [Int] -> [(String, Int)]
 bindInts el (x:xs) = (el, x)  : bindInts el xs
-bindInts el [] = [] 
+bindInts _ [] = [] 
 
 
 -- checks if number is one left from symbol, one right or two right steps. In places of [Int] are put [Symbols OneLeft] or [Symbols OneRight] or [Symbols TwoRight] or [None]

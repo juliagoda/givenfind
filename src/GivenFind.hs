@@ -33,7 +33,6 @@ parameters - your text and searched symbol or even list of symbols.
 
 module GivenFind
 ( Symbols(..) 
-, WhereData(..)
 , mapText
 , removefirstPuncs
 , removelastPuncs
@@ -51,7 +50,6 @@ import Prelude
 import Control.Monad
 import qualified Data.Text as T
 import qualified Data.Map.Strict as M
-import Control.Applicative
 import Data.Maybe
 import Data.List
 import Data.Char
@@ -59,11 +57,11 @@ import Data.Char
 
 data Symbols a = Symbol a| None deriving (Show, Eq, Ord, Read)
 
-data WhereData = OneLeft | OneRight | TwoRight deriving (Eq, Ord, Show)
+-- data WhereData = OneLeft | OneRight | TwoRight deriving (Eq, Ord, Show)
 
 instance Functor Symbols where 
     fmap f (Symbol x) = Symbol (f x)
-    fmap f None = None 
+    fmap _ None = None 
     
 instance Applicative Symbols where  
     pure = Symbol
@@ -73,10 +71,11 @@ instance Applicative Symbols where
 instance Monad Symbols  where
     return a = Symbol a
     Symbol x >>= y = y x
-    None >>= y = None
-    Symbol x >> Symbol y = Symbol y
-    None >> Symbol y = None
-    Symbol x >> None = None
+    None >>= _ = None
+    Symbol _ >> Symbol y = Symbol y
+    None >> Symbol _ = None
+    Symbol _ >> None = None
+    None >> None = None
     fail _ = None
 
 
@@ -136,8 +135,8 @@ getUnitsNumber wordList prevEl (Just (x:xs)) =  case help wordList x of
                                              True -> if (isDigit . head) x then liftM (x :) (getUnitsNumber wordList x (Just xs)) else if (isDigit . head) prevEl then liftM ((prevEl ++ x) :) (getUnitsNumber wordList x $ Just xs) else getUnitsNumber wordList x $ Just xs
                                              False -> getUnitsNumber wordList x $ Just xs
 
-getUnitsNumber wordList prevEl  (Just _) = Just []
-getUnitsNumber wordList prevEl _ = Nothing
+getUnitsNumber _ _  (Just _) = Just []
+getUnitsNumber _ _ _ = Nothing
 
 
 
@@ -146,4 +145,4 @@ help :: [String] -> String -> Bool
 help (x:xs) word = case isInfixOf x word of
                         True -> True
                         _ -> help xs word
-help _ word = False
+help _ _ = False
