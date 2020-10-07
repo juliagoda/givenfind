@@ -10,6 +10,13 @@ license: GPL-3
 homepage: https://github.com/juliagoda/givenfind
 git: git@github.com:givenfind/givenfind.git
 extra-source-files: README.md
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wredundant-constraints
+  - -optP-Wno-nonportable-include-path 
 dependencies:
   - base >=4.8 && <5
   - text >=1.2 && <1.3
