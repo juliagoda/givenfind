@@ -60,7 +60,7 @@ import GivenFind.Questions
 
 --
 
-`ifIsQuestion "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car.""`
+`ifIsQuestion "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."`
 
 *Result:    False*
 
@@ -72,7 +72,7 @@ import GivenFind.Questions
 
 -- 
 
-`findLastTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car."`
+`findLastTask "A car starts from rest and accelerates uniformly over a time of 5.21 seconds for a distance of 110 m. Determine the acceleration of the car. Find acceleration, if time is 10 seconds for a distance of 200 m."`
 
 *Result:    Just " Find acceleration, if time is 10 seconds for a distance of 2.0 m"*
 
